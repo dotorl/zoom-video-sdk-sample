@@ -28,7 +28,8 @@ import {
   DialOutOption,
   VideoCapturingState,
   SharePrivilege,
-  MobileVideoFacingMode
+  MobileVideoFacingMode,
+  LiveTranscriptionLanguage
 } from '@zoom/videosdk';
 import { LiveTranscriptionButton } from './live-transcription';
 import { TranscriptionSubtitle } from './transcription-subtitle';
@@ -223,6 +224,23 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   }, [isStartedLiveTranscription, liveTranscriptionClient]);
 
+  // KOREAN SETTING
+  const setSpeakingLanguage = useCallback(async () => {
+    console.log(
+      ' liveTranscriptionClient?.getLiveTranscriptionStatus()  ',
+      liveTranscriptionClient?.getLiveTranscriptionStatus()
+    );
+
+    await liveTranscriptionClient?.setSpeakingLanguage(LiveTranscriptionLanguage.Korean);
+    await liveTranscriptionClient?.setTranslationLanguage(LiveTranscriptionLanguage.Korean);
+  }, []);
+
+  // END SETTING
+  const setSpeakingLanguageEng = useCallback(async () => {
+    await liveTranscriptionClient?.setSpeakingLanguage(LiveTranscriptionLanguage.English);
+    await liveTranscriptionClient?.setTranslationLanguage(LiveTranscriptionLanguage.English);
+  }, []);
+
   const onPassivelyStopShare = useCallback(({ reason }) => {
     console.log('passively stop reason:', reason);
     setIsStartedScreenShare(false);
@@ -303,6 +321,8 @@ const VideoFooter = (props: VideoFooterProps) => {
 
   const onCaptionMessage = useCallback((payload) => {
     const { text, done } = payload;
+
+    console.log('onCaptionMessage : ', text);
     setCaption({
       text,
       isOver: done
@@ -464,6 +484,9 @@ const VideoFooter = (props: VideoFooterProps) => {
         isMuted={isMuted}
         isStartedVideo={isStartedVideo}
       />
+
+      <button onClick={setSpeakingLanguage}>KOREAN</button>
+      <button onClick={setSpeakingLanguageEng}>ENG</button>
     </div>
   );
 };

@@ -13,7 +13,7 @@ interface HomeProps extends RouteComponentProps {
 const Home: React.FunctionComponent<HomeProps> = (props) => {
   const { history, status, onLeaveOrJoinSession } = props;
   const onCardClick = (type: string) => {
-      history.push(`/${type}${location.search}`);
+    history.push(`/${type}${location.search}`);
   };
   const featureList = [
     {
@@ -61,19 +61,11 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
           <span>VideoSDK Demo</span>
         </a>
         <div className="navdoc">
-          <a
-            href="https://marketplace.zoom.us/docs/sdk/video/web/reference"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://marketplace.zoom.us/docs/sdk/video/web/reference" target="_blank" rel="noreferrer">
             <span>API Reference</span>
           </a>
 
-          <a
-            href="https://marketplace.zoom.us/docs/sdk/video/web/build/sample-app"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://marketplace.zoom.us/docs/sdk/video/web/build/sample-app" target="_blank" rel="noreferrer">
             <span>Doc</span>
           </a>
         </div>

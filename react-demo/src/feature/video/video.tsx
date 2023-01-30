@@ -17,6 +17,7 @@ import './video.scss';
 import { isSupportWebCodecs } from '../../utils/platform';
 import { isShallowEqual } from '../../utils/util';
 import { useSizeCallback } from '../../hooks/useSizeCallback';
+import ChatContainer from '../chat/chat';
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => {
   const zmClient = useContext(ZoomContext);
@@ -82,72 +83,84 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   }, [mediaStream, sharedContentDimension, shareViewDimension]);
 
   return (
-    <div className="viewport">
-      <div
-        className={classnames('share-container', {
-          'in-sharing': isSharing
-        })}
-        ref={shareContainerRef}
-      >
+    <div
+      className="viewport"
+      style={{
+        padding: '5vh 20px 10vh'
+      }}
+    >
+      <div style={{ width: '100%', position: 'relative' }}>
         <div
-          className="share-container-viewport"
-          style={{
-            width: `${shareViewDimension.width}px`,
-            height: `${shareViewDimension.height}px`
-          }}
-        >
-          <canvas className={classnames('share-canvas', { hidden: isStartedShare })} ref={shareRef} />
-          {isSupportWebCodecs() ? (
-            <video
-              className={classnames('share-canvas', {
-                hidden: isRecieveSharing
-              })}
-              ref={selfShareRef}
-            />
-          ) : (
-            <canvas
-              className={classnames('share-canvas', {
-                hidden: isRecieveSharing
-              })}
-              ref={selfShareRef}
-            />
-          )}
-        </div>
-      </div>
-      <div
-        className={classnames('video-container', {
-          'in-sharing': isSharing
-        })}
-      >
-        <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
-        <ul className="avatar-list">
-          {visibleParticipants.map((user, index) => {
-            if (index > videoLayout.length - 1) {
-              return null;
-            }
-            const dimension = videoLayout[index];
-            const { width, height, x, y } = dimension;
-            const { height: canvasHeight } = canvasDimension;
-            return (
-              <Avatar
-                participant={user}
-                key={user.userId}
-                isActive={activeVideo === user.userId}
-                volume={userVolumeList.find((u) => u.userId === user.userId)?.volume}
-                setLocalVolume={setLocalVolume}
-                style={{
-                  width: `${width}px`,
-                  height: `${height}px`,
-                  top: `${canvasHeight - y - height}px`,
-                  left: `${x}px`
-                }}
-              />
-            );
+          className={classnames('share-container', {
+            'in-sharing': isSharing
           })}
-        </ul>
+          ref={shareContainerRef}
+        >
+          <div
+            className="share-container-viewport"
+            style={{
+              width: `${shareViewDimension.width}px`,
+              height: `${shareViewDimension.height}px`
+            }}
+          >
+            <canvas className={classnames('share-canvas', { hidden: isStartedShare })} ref={shareRef} />
+            {isSupportWebCodecs() ? (
+              <video
+                className={classnames('share-canvas', {
+                  hidden: isRecieveSharing
+                })}
+                ref={selfShareRef}
+              />
+            ) : (
+              <canvas
+                className={classnames('share-canvas', {
+                  hidden: isRecieveSharing
+                })}
+                ref={selfShareRef}
+              />
+            )}
+          </div>
+        </div>
+        <div
+          className={classnames('video-container', {
+            'in-sharing': isSharing
+          })}
+        >
+          <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
+          <ul className="avatar-list">
+            {visibleParticipants.map((user, index) => {
+              if (index > videoLayout.length - 1) {
+                return null;
+              }
+              const dimension = videoLayout[index];
+              const { width, height, x, y } = dimension;
+              const { height: canvasHeight } = canvasDimension;
+              return (
+                <Avatar
+                  participant={user}
+                  key={user.userId}
+                  isActive={activeVideo === user.userId}
+                  volume={userVolumeList.find((u) => u.userId === user.userId)?.volume}
+                  setLocalVolume={setLocalVolume}
+                  style={{
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    top: `${canvasHeight - y - height}px`,
+                    left: `${x}px`
+                  }}
+                />
+              );
+            })}
+          </ul>
+        </div>
+
+        <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
+        {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
       </div>
-      <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
-      {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
+
+      <div style={{ width: '25vw', position: 'relative' }}>
+        <ChatContainer />
+      </div>
     </div>
   );
 };
